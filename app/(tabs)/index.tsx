@@ -63,7 +63,7 @@ export default function Home() {
         styles.reportBox,
         {
           backgroundColor: item.color,
-          width: viewMode === "grid" ? "47%" : "90%",
+          width: viewMode === "grid" ? "47%" : "100%",
           height: viewMode === "grid" ? 120 : 60,
           flexDirection: viewMode === "grid" ? "column" : "row",
         },
@@ -75,7 +75,7 @@ export default function Home() {
         style={styles.editButton}
         onPress={() => openEdit(item)}
       >
-        <Ionicons name="pencil" size={18} color="#fff" />
+        <Ionicons name="pencil" size={22} color="#fff" />
       </TouchableOpacity>
     </TouchableOpacity>
   );
@@ -88,7 +88,7 @@ export default function Home() {
         <TouchableOpacity onPress={toggleView}>
           <Ionicons
             name={viewMode === "grid" ? "list-outline" : "grid-outline"}
-            size={26}
+            size={30}
             color="#fff"
           />
         </TouchableOpacity>
