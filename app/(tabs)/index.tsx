@@ -1,211 +1,272 @@
+import { Ionicons } from "@expo/vector-icons";
 import React, { useState } from "react";
 import {
-  View,
+  FlatList,
+  Modal,
+  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
-  StyleSheet,
-  Image,
-  ScrollView,
+  View,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
 
-export default function LoginScreen() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
+export default function Home() {
+  const [viewMode, setViewMode] = useState("grid"); // grid | list
+  const [reports, setReports] = useState([
+    { id: "1", name: "Seu Relatorio", color: "#333" },
+    { id: "2", name: "Seu Relatorio", color: "#333" },
+    { id: "3", name: "Seu Relatorio", color: "#333" },
+    { id: "4", name: "Seu Relatorio", color: "#333" },
+  ]);
+  const [editModal, setEditModal] = useState(false);
+  const [selectedReport, setSelectedReport] = useState(null);
+  const [newName, setNewName] = useState("");
+  const [newColor, setNewColor] = useState("#333");
+
+  const colors = [
+    "#333",
+    "#4CAF50",
+    "#2196F3",
+    "#9C27B0",
+    "#E91E63",
+    "#FF9800",
+    "#F44336",
+    "#00BCD4",
+    "#8BC34A",
+  ];
+
+  const toggleView = () => {
+    setViewMode((prev) => (prev === "grid" ? "list" : "grid"));
+  };
+
+  const openEdit = (report) => {
+    setSelectedReport(report);
+    setNewName(report.name);
+    setNewColor(report.color);
+    setEditModal(true);
+  };
+
+  const saveEdit = () => {
+    setReports((prev) =>
+      prev.map((r) =>
+        r.id === selectedReport.id
+          ? { ...r, name: newName || r.name, color: newColor }
+          : r
+      )
+    );
+    setEditModal(false);
+  };
+
+  const renderItem = ({ item }) => (
+    <TouchableOpacity
+      style={[
+        styles.reportBox,
+        {
+          backgroundColor: item.color,
+          width: viewMode === "grid" ? "47%" : "90%",
+          height: viewMode === "grid" ? 120 : 60,
+          flexDirection: viewMode === "grid" ? "column" : "row",
+        },
+      ]}
+      activeOpacity={0.8}
+    >
+      <Text style={styles.reportText}>{item.name}</Text>
+      <TouchableOpacity
+        style={styles.editButton}
+        onPress={() => openEdit(item)}
+      >
+        <Ionicons name="pencil" size={18} color="#fff" />
+      </TouchableOpacity>
+    </TouchableOpacity>
+  );
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <View style={styles.card}>
-        <Image
-          source={{
-            uri: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
-          }}
-          style={styles.avatar}
-        />
-
-        {/* Email */}
-        <Text style={styles.label}>Email</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Digite seu email"
-          placeholderTextColor="#aaa"
-          value={email}
-          onChangeText={setEmail}
-        />
-
-        {/* Senha */}
-        <Text style={styles.label}>Senha</Text>
-        <View style={styles.passwordContainer}>
-          <TextInput
-            style={[styles.input, { flex: 1 }]}
-            placeholder="Digite sua senha"
-            placeholderTextColor="#aaa"
-            secureTextEntry={!showPassword}
-            value={password}
-            onChangeText={setPassword}
+    <View style={styles.container}>
+      {/* Header */}
+      <View style={styles.header}>
+        <Text style={styles.title}>Home</Text>
+        <TouchableOpacity onPress={toggleView}>
+          <Ionicons
+            name={viewMode === "grid" ? "list-outline" : "grid-outline"}
+            size={26}
+            color="#fff"
           />
-          <TouchableOpacity
-            onPress={() => setShowPassword(!showPassword)}
-            style={styles.eyeIcon}
-          >
-            <Ionicons
-              name={showPassword ? "eye-off-outline" : "eye-outline"}
-              size={22}
-              color="#ccc"
-            />
-          </TouchableOpacity>
-        </View>
-
-        {/* Esqueci minha senha */}
-        <TouchableOpacity>
-          <Text style={styles.forgot}>Esqueci minha Senha</Text>
         </TouchableOpacity>
-
-        {/* Botão conectar */}
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonText}>Conectar</Text>
-        </TouchableOpacity>
-
-        {/* Linha divisória */}
-        <View style={styles.dividerContainer}>
-          <View style={styles.line} />
-          <Text style={styles.ou}>OU</Text>
-          <View style={styles.line} />
-        </View>
-
-        {/* Google */}
-        <TouchableOpacity style={styles.googleButton}>
-          <Ionicons name="logo-google" size={18} color="#fff" />
-          <Text style={styles.googleText}>Continuar com o google</Text>
-        </TouchableOpacity>
-
-        {/* Registro */}
-        <Text style={styles.registerText}>
-          Não possui uma conta?
-          <Text style={styles.registerLink}> Registre-se aqui</Text>
-        </Text>
-
-        {/* Termos */}
-        <Text style={styles.terms}>
-          Ao continuar, afirmo que concordo com a{" "}
-          <Text style={styles.link}>Política de privacidade</Text> e os{" "}
-          <Text style={styles.link}>Termos de uso</Text> do My Finance.
-        </Text>
       </View>
-    </ScrollView>
+
+      {/* Lista */}
+      <FlatList
+        data={reports}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id}
+        numColumns={viewMode === "grid" ? 2 : 1}
+        key={viewMode}
+        contentContainerStyle={styles.list}
+        columnWrapperStyle={
+          viewMode === "grid" ? { justifyContent: "space-between" } : null
+        }
+      />
+
+      {/* Botão flutuante */}
+      <TouchableOpacity style={styles.fab}>
+        <Ionicons name="add" size={30} color="#fff" />
+      </TouchableOpacity>
+
+      {/* Modal de Edição */}
+      <Modal visible={editModal} transparent animationType="fade">
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Editar Relatório</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Novo nome"
+              placeholderTextColor="#aaa"
+              value={newName}
+              onChangeText={setNewName}
+            />
+
+            <Text style={styles.colorLabel}>Selecione uma cor:</Text>
+            <View style={styles.colorPalette}>
+              {colors.map((c) => (
+                <TouchableOpacity
+                  key={c}
+                  style={[
+                    styles.colorCircle,
+                    {
+                      backgroundColor: c,
+                      borderWidth: newColor === c ? 3 : 1,
+                      borderColor: newColor === c ? "#fff" : "#555",
+                    },
+                  ]}
+                  onPress={() => setNewColor(c)}
+                />
+              ))}
+            </View>
+
+            <View style={styles.modalButtons}>
+              <TouchableOpacity
+                style={[styles.btn, { backgroundColor: "#4caf50" }]}
+                onPress={saveEdit}
+              >
+                <Text style={styles.btnText}>Salvar</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.btn, { backgroundColor: "#e53935" }]}
+                onPress={() => setEditModal(false)}
+              >
+                <Text style={styles.btnText}>Cancelar</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flexGrow: 1,
-    backgroundColor: "#2b2b2b",
+    flex: 1,
+    backgroundColor: "#121212",
+    paddingTop: 50,
+  },
+  header: {
+    width: "90%",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    alignSelf: "center",
+    marginBottom: 15,
+  },
+  title: {
+    color: "#fff",
+    fontSize: 22,
+    fontWeight: "bold",
+  },
+  list: {
+    paddingHorizontal: 16,
+    paddingBottom: 100,
+  },
+  reportBox: {
+    borderRadius: 12,
+    marginVertical: 8,
+    justifyContent: "space-between",
+    padding: 12,
+  },
+  reportText: {
+    color: "#fff",
+    fontSize: 15,
+    fontWeight: "600",
+  },
+  editButton: {
+    alignSelf: "flex-end",
+  },
+  fab: {
+    position: "absolute",
+    bottom: 25,
+    right: 25,
+    backgroundColor: "#2196F3",
+    borderRadius: 50,
+    width: 60,
+    height: 60,
     justifyContent: "center",
     alignItems: "center",
-    paddingVertical: 40,
+    elevation: 8,
   },
-  card: {
-    backgroundColor: "#1e1e1e",
-    borderRadius: 20,
-    padding: 25,
-    width: "85%",
+  modalContainer: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.7)",
+    justifyContent: "center",
     alignItems: "center",
-    elevation: 10,
   },
-  avatar: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    marginBottom: 20,
+  modalContent: {
+    backgroundColor: "#1e1e1e",
+    borderRadius: 10,
+    width: "80%",
+    padding: 20,
   },
-  label: {
-    alignSelf: "flex-start",
+  modalTitle: {
     color: "#fff",
+    fontSize: 18,
     fontWeight: "bold",
-    marginLeft: 5,
-    marginTop: 10,
+    marginBottom: 15,
   },
   input: {
-    backgroundColor: "#d9d9d9",
-    borderRadius: 10,
+    backgroundColor: "#2a2a2a",
+    borderRadius: 8,
+    color: "#fff",
     padding: 10,
-    width: "100%",
-    marginTop: 5,
-    color: "#000",
+    marginBottom: 15,
   },
-  passwordContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    width: "100%",
-  },
-  eyeIcon: {
-    position: "absolute",
-    right: 10,
-  },
-  forgot: {
-    color: "#0095ff",
-    fontSize: 13,
-    marginTop: 8,
-    alignSelf: "flex-start",
-  },
-  button: {
-    backgroundColor: "#22aa22",
-    borderRadius: 20,
-    paddingVertical: 10,
-    paddingHorizontal: 40,
-    marginTop: 20,
-    elevation: 5,
-  },
-  buttonText: {
+  colorLabel: {
     color: "#fff",
-    fontWeight: "bold",
-    fontSize: 16,
+    marginBottom: 8,
+    fontWeight: "600",
   },
-  dividerContainer: {
+  colorPalette: {
     flexDirection: "row",
-    alignItems: "center",
-    marginVertical: 15,
-  },
-  line: {
-    flex: 1,
-    height: 1,
-    backgroundColor: "#999",
-  },
-  ou: {
-    color: "#ccc",
-    marginHorizontal: 10,
-  },
-  googleButton: {
-    backgroundColor: "#4285F4",
-    flexDirection: "row",
-    alignItems: "center",
+    flexWrap: "wrap",
     justifyContent: "center",
-    paddingVertical: 10,
-    borderRadius: 10,
-    width: "100%",
+    marginBottom: 15,
   },
-  googleText: {
+  colorCircle: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    margin: 5,
+  },
+  modalButtons: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  btn: {
+    padding: 10,
+    borderRadius: 8,
+    width: "45%",
+    alignItems: "center",
+  },
+  btnText: {
     color: "#fff",
     fontWeight: "bold",
-    marginLeft: 8,
-  },
-  registerText: {
-    color: "#ccc",
-    marginTop: 15,
-  },
-  registerLink: {
-    color: "#0095ff",
-    fontWeight: "bold",
-  },
-  terms: {
-    fontSize: 11,
-    color: "#888",
-    textAlign: "center",
-    marginTop: 20,
-  },
-  link: {
-    color: "#0095ff",
   },
 });
