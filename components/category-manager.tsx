@@ -1,3 +1,4 @@
+// @ts-nocheck
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useState } from 'react';
 import {

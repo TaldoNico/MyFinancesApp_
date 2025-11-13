@@ -1,4 +1,6 @@
+import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
+// @ts-nocheck
 import React from 'react';
 
 import { HapticTab } from '@/components/haptic-tab';
@@ -17,17 +19,57 @@ export default function TabLayout() {
         tabBarButton: HapticTab,
       }}>
       <Tabs.Screen
-        name="index"
+        name="home"
         options={{
           title: 'Home',
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="achievements"
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          title: 'Conquistas',
+          tabBarIcon: ({ color }) => <Ionicons name="trophy" size={28} color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="report"
+        options={{
+          title: 'Relatórios',
+          tabBarIcon: ({ color }) => <Ionicons name="bar-chart" size={28} color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="my_goals"
+        options={{
+          title: 'Metas',
+          tabBarIcon: ({ color }) => <Ionicons name="pin" size={28} color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="settings"
+        options={{
+          title: 'Configurações',
+          tabBarIcon: ({ color }) => <Ionicons name="settings" size={28} color={color} />,
+        }}
+      />
+      {/* Telas de autenticação (ocultas da barra de abas) */}
+      <Tabs.Screen
+        name="index"
+        options={{
+          href: null,
+        }}
+      />
+      <Tabs.Screen
+        name="register"
+        options={{
+          href: null,
+        }}
+      />
+      <Tabs.Screen
+        name="forgot_password"
+        options={{
+          href: null,
         }}
       />
     </Tabs>

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 import { Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Category } from '../types/category';

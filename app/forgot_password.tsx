@@ -4,33 +4,34 @@ import { useRouter } from "expo-router";
 // @ts-nocheck
 import React, { useState } from "react";
 import {
-  Image,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
+    Alert,
+    Image,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
 } from "react-native";
 
-export default function RegisterScreen() {
+export default function ForgotPasswordScreen() {
   const router = useRouter();
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
-  const handleRegister = () => {
-    if (!email || !password || !confirmPassword) {
-      alert("Preencha todos os campos!");
+  const handleResetPassword = () => {
+    if (!email || !newPassword || !confirmPassword) {
+      Alert.alert("Atenção", "Preencha todos os campos!");
       return;
     }
-    if (password !== confirmPassword) {
-      alert("As senhas não coincidem!");
+    if (newPassword !== confirmPassword) {
+      Alert.alert("Erro", "As senhas não coincidem!");
       return;
     }
-    alert("Conta registrada com sucesso!");
+    Alert.alert("Sucesso", "Senha redefinida com sucesso!");
   };
 
   return (
@@ -53,23 +54,23 @@ export default function RegisterScreen() {
           onChangeText={setEmail}
         />
 
-        {/* Senha */}
-        <Text style={styles.label}>Senha</Text>
+        {/* Senha Nova */}
+        <Text style={styles.label}>Senha Nova</Text>
         <View style={styles.passwordContainer}>
           <TextInput
             style={[styles.input, { flex: 1 }]}
-            placeholder="Digite sua senha"
+            placeholder="Digite a nova senha"
             placeholderTextColor="#aaa"
-            secureTextEntry={!showPassword}
-            value={password}
-            onChangeText={setPassword}
+            secureTextEntry={!showNewPassword}
+            value={newPassword}
+            onChangeText={setNewPassword}
           />
           <TouchableOpacity
-            onPress={() => setShowPassword(!showPassword)}
+            onPress={() => setShowNewPassword(!showNewPassword)}
             style={styles.eyeIcon}
           >
             <Ionicons
-              name={showPassword ? "eye-off-outline" : "eye-outline"}
+              name={showNewPassword ? "eye-off-outline" : "eye-outline"}
               size={22}
               color="#ccc"
             />
@@ -77,11 +78,11 @@ export default function RegisterScreen() {
         </View>
 
         {/* Confirmar Senha */}
-        <Text style={styles.label}>Confirmar Senha</Text>
+        <Text style={styles.label}>Confirmar a Senha Nova</Text>
         <View style={styles.passwordContainer}>
           <TextInput
             style={[styles.input, { flex: 1 }]}
-            placeholder="Confirme sua senha"
+            placeholder="Confirme sua nova senha"
             placeholderTextColor="#aaa"
             secureTextEntry={!showConfirm}
             value={confirmPassword}
@@ -99,37 +100,25 @@ export default function RegisterScreen() {
           </TouchableOpacity>
         </View>
 
-        {/* Botão Registrar */}
-        <TouchableOpacity style={styles.button} onPress={handleRegister}>
-          <Text style={styles.buttonText}>Registrar-se</Text>
+        {/* Botão Redefinir */}
+        <TouchableOpacity style={styles.button} onPress={handleResetPassword}>
+          <Text style={styles.buttonText}>Redefinir Senha</Text>
         </TouchableOpacity>
 
-        {/* Linha divisória */}
-        <View style={styles.dividerContainer}>
-          <View style={styles.line} />
-          <Text style={styles.ou}>OU</Text>
-          <View style={styles.line} />
-        </View>
-
-        {/* Google */}
-        <TouchableOpacity style={styles.googleButton}>
-          <Ionicons name="logo-google" size={18} color="#fff" />
-          <Text style={styles.googleText}>Continuar com o google</Text>
+        {/* Voltar para Login */}
+        <TouchableOpacity
+          onPress={() => router.push("/(tabs)")}
+          style={styles.backButton}
+        >
+          <Text style={styles.backButtonText}>← Voltar para Login</Text>
         </TouchableOpacity>
 
-        {/* Entrar */}
+        {/* Link para Registrar */}
         <Text style={styles.registerText}>
-          Já possui uma conta?
-          <TouchableOpacity onPress={() => router.push("/(tabs)")}>
-            <Text style={styles.registerLink}> Entre aqui</Text>
+          Não possui uma conta?
+          <TouchableOpacity onPress={() => router.push("/register")}>
+            <Text style={styles.registerLink}> Registre-se aqui</Text>
           </TouchableOpacity>
-        </Text>
-
-        {/* Termos */}
-        <Text style={styles.terms}>
-          Ao continuar, afirmo que concordo com a{" "}
-          <Text style={styles.link}>Política de privacidade</Text> e os{" "}
-          <Text style={styles.link}>Termos de uso</Text> do My Finance.
         </Text>
       </View>
     </ScrollView>
@@ -195,33 +184,18 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 16,
   },
-  dividerContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginVertical: 15,
-  },
-  line: {
-    flex: 1,
-    height: 1,
-    backgroundColor: "#999",
-  },
-  ou: {
-    color: "#ccc",
-    marginHorizontal: 10,
-  },
-  googleButton: {
-    backgroundColor: "#4285F4",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
+  backButton: {
+    marginTop: 15,
     paddingVertical: 10,
+    paddingHorizontal: 20,
+    backgroundColor: "#333",
     borderRadius: 10,
-    width: "100%",
+    alignItems: "center",
   },
-  googleText: {
-    color: "#fff",
+  backButtonText: {
+    color: "#0095ff",
     fontWeight: "bold",
-    marginLeft: 8,
+    fontSize: 14,
   },
   registerText: {
     color: "#ccc",
@@ -230,14 +204,5 @@ const styles = StyleSheet.create({
   registerLink: {
     color: "#0095ff",
     fontWeight: "bold",
-  },
-  terms: {
-    fontSize: 11,
-    color: "#888",
-    textAlign: "center",
-    marginTop: 20,
-  },
-  link: {
-    color: "#0095ff",
   },
 });

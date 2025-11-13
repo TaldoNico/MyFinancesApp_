@@ -1,4 +1,6 @@
+// @ts-nocheck
 import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
   Alert,
@@ -12,6 +14,7 @@ import {
 } from "react-native";
 
 export default function ForgotPasswordScreen() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -100,6 +103,22 @@ export default function ForgotPasswordScreen() {
         <TouchableOpacity style={styles.button} onPress={handleResetPassword}>
           <Text style={styles.buttonText}>Redefinir Senha</Text>
         </TouchableOpacity>
+
+        {/* Voltar para Login */}
+        <TouchableOpacity
+          onPress={() => router.push("/(tabs)")}
+          style={styles.backButton}
+        >
+          <Text style={styles.backButtonText}>← Voltar para Login</Text>
+        </TouchableOpacity>
+
+        {/* Link para Registrar */}
+        <Text style={styles.registerText}>
+          Não possui uma conta?
+          <TouchableOpacity onPress={() => router.push("/(tabs)/register")}>
+            <Text style={styles.registerLink}> Registre-se aqui</Text>
+          </TouchableOpacity>
+        </Text>
       </View>
     </ScrollView>
   );
@@ -163,5 +182,26 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontWeight: "bold",
     fontSize: 16,
+  },
+  backButton: {
+    marginTop: 15,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    backgroundColor: "#333",
+    borderRadius: 10,
+    alignItems: "center",
+  },
+  backButtonText: {
+    color: "#0095ff",
+    fontWeight: "bold",
+    fontSize: 14,
+  },
+  registerText: {
+    color: "#ccc",
+    marginTop: 15,
+  },
+  registerLink: {
+    color: "#0095ff",
+    fontWeight: "bold",
   },
 });

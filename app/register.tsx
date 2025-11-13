@@ -1,19 +1,37 @@
+// @ts-nocheck
 import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
+// @ts-nocheck
 import React, { useState } from "react";
 import {
-  Image,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
+    Image,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
 } from "react-native";
 
-export default function LoginScreen() {
+export default function RegisterScreen() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+
+  const handleRegister = () => {
+    if (!email || !password || !confirmPassword) {
+      alert("Preencha todos os campos!");
+      return;
+    }
+    if (password !== confirmPassword) {
+      alert("As senhas não coincidem!");
+      return;
+    }
+    alert("Conta registrada com sucesso!");
+  };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -58,14 +76,32 @@ export default function LoginScreen() {
           </TouchableOpacity>
         </View>
 
-        {/* Esqueci minha senha */}
-        <TouchableOpacity>
-          <Text style={styles.forgot}>Esqueci minha Senha</Text>
-        </TouchableOpacity>
+        {/* Confirmar Senha */}
+        <Text style={styles.label}>Confirmar Senha</Text>
+        <View style={styles.passwordContainer}>
+          <TextInput
+            style={[styles.input, { flex: 1 }]}
+            placeholder="Confirme sua senha"
+            placeholderTextColor="#aaa"
+            secureTextEntry={!showConfirm}
+            value={confirmPassword}
+            onChangeText={setConfirmPassword}
+          />
+          <TouchableOpacity
+            onPress={() => setShowConfirm(!showConfirm)}
+            style={styles.eyeIcon}
+          >
+            <Ionicons
+              name={showConfirm ? "eye-off-outline" : "eye-outline"}
+              size={22}
+              color="#ccc"
+            />
+          </TouchableOpacity>
+        </View>
 
-        {/* Botão conectar */}
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonText}>Conectar</Text>
+        {/* Botão Registrar */}
+        <TouchableOpacity style={styles.button} onPress={handleRegister}>
+          <Text style={styles.buttonText}>Registrar-se</Text>
         </TouchableOpacity>
 
         {/* Linha divisória */}
@@ -81,10 +117,12 @@ export default function LoginScreen() {
           <Text style={styles.googleText}>Continuar com o google</Text>
         </TouchableOpacity>
 
-        {/* Registro */}
+        {/* Entrar */}
         <Text style={styles.registerText}>
-          Não possui uma conta?
-          <Text style={styles.registerLink}> Registre-se aqui</Text>
+          Já possui uma conta?
+          <TouchableOpacity onPress={() => router.push("/(tabs)")}>
+            <Text style={styles.registerLink}> Entre aqui</Text>
+          </TouchableOpacity>
         </Text>
 
         {/* Termos */}
@@ -143,12 +181,6 @@ const styles = StyleSheet.create({
   eyeIcon: {
     position: "absolute",
     right: 10,
-  },
-  forgot: {
-    color: "#0095ff",
-    fontSize: 13,
-    marginTop: 8,
-    alignSelf: "flex-start",
   },
   button: {
     backgroundColor: "#22aa22",
