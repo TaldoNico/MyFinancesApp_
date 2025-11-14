@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-  "strict": false,
-  "noImplicitAny": false,
+    "strict": false,
+    "noImplicitAny": false,
     "jsx": "react-native",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
@@ -18,5 +18,6 @@
     "**/*.tsx",
     ".expo/types/**/*.ts",
     "expo-env.d.ts"
-  ]
+  ],
+  "extends": "expo/tsconfig.base"
 }

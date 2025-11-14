@@ -16,7 +16,6 @@ import {
 export default function Home() {
   const router = useRouter();
   const [viewMode, setViewMode] = useState("grid");
-  // Por padrão não mostrar relatórios (tela limpa). Se quiser ver exemplos, preencha essa lista.
   const [reports, setReports] = useState([]);
   const [editModal, setEditModal] = useState(false);
   const [selectedReport, setSelectedReport] = useState(null);
@@ -42,7 +41,7 @@ export default function Home() {
     setViewMode((prev) => (prev === "grid" ? "list" : "grid"));
   };
 
-  const openEdit = (report) => {
+  const openEdit = (report: any) => {
     setSelectedReport(report);
     setNewName(report.name);
     setNewColor(report.color);
@@ -51,8 +50,8 @@ export default function Home() {
 
   const saveEdit = () => {
     setReports((prev) =>
-      prev.map((r) =>
-        r.id === selectedReport.id
+      prev.map((r: any) =>
+        r.id === selectedReport?.id
           ? { ...r, name: newName || r.name, color: newColor }
           : r
       )
@@ -77,11 +76,10 @@ export default function Home() {
     setCreateModal(false);
     setCreateName("");
     setCreateColor("#4ECDC4");
-    // Navigate to report screen after creating
     router.push("/(tabs)/report");
   };
 
-  const handleReportPress = (report) => {
+  const handleReportPress = (report: any) => {
     router.push("/(tabs)/report");
   };
 
@@ -184,7 +182,7 @@ export default function Home() {
           columnWrapperStyle={
             viewMode === "grid"
               ? { justifyContent: "space-between", gap: 12 }
-              : null
+              : undefined
           }
           scrollEnabled={false}
         />
