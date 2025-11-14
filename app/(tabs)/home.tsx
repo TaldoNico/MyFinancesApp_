@@ -1,7 +1,7 @@
 ﻿// @ts-nocheck
 import { Ionicons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
-import { useState } from "react";
+import { useRouter, useSearchParams } from "expo-router";
+import { useEffect, useState } from "react";
 import {
   FlatList,
   Modal,
@@ -15,6 +15,7 @@ import {
 
 export default function Home() {
   const router = useRouter();
+  const { create } = useSearchParams();
   const [viewMode, setViewMode] = useState("grid");
   const [reports, setReports] = useState([]);
   const [editModal, setEditModal] = useState(false);
@@ -24,6 +25,18 @@ export default function Home() {
   const [createModal, setCreateModal] = useState(false);
   const [createName, setCreateName] = useState("");
   const [createColor, setCreateColor] = useState("#4ECDC4");
+
+  useEffect(() => {
+    if (create === "1") {
+      setCreateModal(true);
+      // remove query param after opening modal
+      try {
+        router.replace("/(tabs)/home");
+      } catch (e) {
+        // ignore replace errors
+      }
+    }
+  }, [create]);
 
   const colors = [
     "#FF6B6B",
@@ -194,12 +207,7 @@ export default function Home() {
         </ScrollView>
       )}
 
-      <TouchableOpacity
-        style={styles.fab}
-        onPress={() => setCreateModal(true)}
-      >
-        <Ionicons name="add" size={32} color="#fff" />
-      </TouchableOpacity>
+      {/* FAB central agora é fornecido pelo Tab Layout (CenterFab). */}
 
       <Modal visible={editModal} transparent animationType="fade">
         <View style={styles.modalContainer}>
@@ -452,22 +460,6 @@ const styles = StyleSheet.create({
   },
   listEditButton: {
     padding: 8,
-  },
-  fab: {
-    position: "absolute",
-    bottom: 12,
-    alignSelf: "center",
-    backgroundColor: "#4ECDC4",
-    borderRadius: 34,
-    width: 68,
-    height: 68,
-    justifyContent: "center",
-    alignItems: "center",
-    elevation: 8,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 6,
   },
   emptyContainer: {
     flex: 1,
