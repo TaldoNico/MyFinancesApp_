@@ -1,6 +1,6 @@
 ﻿// @ts-nocheck
 import { Ionicons } from "@expo/vector-icons";
-import { useRouter, useSearchParams } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import {
   FlatList,
@@ -15,7 +15,8 @@ import {
 
 export default function Home() {
   const router = useRouter();
-  const { create } = useSearchParams();
+  const { create } = useLocalSearchParams();
+
   const [viewMode, setViewMode] = useState("grid");
   const [reports, setReports] = useState([]);
   const [editModal, setEditModal] = useState(false);
@@ -29,12 +30,9 @@ export default function Home() {
   useEffect(() => {
     if (create === "1") {
       setCreateModal(true);
-      // remove query param after opening modal
       try {
         router.replace("/(tabs)/home");
-      } catch (e) {
-        // ignore replace errors
-      }
+      } catch (e) {}
     }
   }, [create]);
 
@@ -78,6 +76,7 @@ export default function Home() {
     const date = new Date();
     const month = date.toLocaleString("pt-BR", { month: "short" });
     const year = date.getFullYear();
+
     const report = {
       id,
       name,
@@ -85,10 +84,13 @@ export default function Home() {
       progress: 0,
       date: `${month} ${year}`,
     };
+
     setReports((prev) => [report, ...prev]);
     setCreateModal(false);
+
     setCreateName("");
     setCreateColor("#4ECDC4");
+
     router.push("/(tabs)/report");
   };
 
@@ -145,21 +147,29 @@ export default function Home() {
               { backgroundColor: item.color },
             ]}
           />
+
           <View style={styles.listContent}>
             <Text style={styles.listTitle}>{item.name}</Text>
+
             <View style={styles.listInfo}>
               <Text style={styles.listDate}>{item.date}</Text>
+
               <View style={styles.listProgressBar}>
                 <View
                   style={[
                     styles.listProgressFill,
-                    { width: `${item.progress}%`, backgroundColor: item.color },
+                    {
+                      width: `${item.progress}%`,
+                      backgroundColor: item.color,
+                    },
                   ]}
                 />
               </View>
+
               <Text style={styles.listProgress}>{item.progress}%</Text>
             </View>
           </View>
+
           <TouchableOpacity
             onPress={() => openEdit(item)}
             style={styles.listEditButton}
@@ -173,6 +183,7 @@ export default function Home() {
 
   return (
     <View style={styles.container}>
+      {/* HEADER */}
       <View style={[styles.header, { marginTop: 50 }]}>
         <Text style={styles.headerTitle}>Home</Text>
         <TouchableOpacity onPress={toggleView} style={styles.iconButton}>
@@ -184,6 +195,7 @@ export default function Home() {
         </TouchableOpacity>
       </View>
 
+      {/* LISTAGEM */}
       {reports.length > 0 ? (
         <FlatList
           data={reports}
@@ -193,22 +205,23 @@ export default function Home() {
           key={viewMode}
           contentContainerStyle={styles.list}
           columnWrapperStyle={
-            viewMode === "grid"
-              ? { justifyContent: "space-between", gap: 12 }
-              : undefined
+            viewMode === "grid" ? { gap: 16 } : undefined
           }
           scrollEnabled={false}
         />
       ) : (
         <ScrollView contentContainerStyle={styles.emptyContainer}>
           <Ionicons name="document-outline" size={80} color="#666" />
-          <Text style={styles.emptyText}>Infelizmente não há nenhum relátorio disponivel no momento...</Text>
-          <Text style={styles.emptySubtext}>Toque no + para criar um relatório</Text>
+          <Text style={styles.emptyText}>
+            Infelizmente não há nenhum relátorio disponivel no momento...
+          </Text>
+          <Text style={styles.emptySubtext}>
+            Toque no + para criar um relatório
+          </Text>
         </ScrollView>
       )}
 
-      {/* FAB central agora é fornecido pelo Tab Layout (CenterFab). */}
-
+      {/* EDIT MODAL */}
       <Modal visible={editModal} transparent animationType="fade">
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
@@ -247,6 +260,7 @@ export default function Home() {
               >
                 <Text style={styles.btnText}>Salvar</Text>
               </TouchableOpacity>
+
               <TouchableOpacity
                 style={[styles.btn, { backgroundColor: "#666" }]}
                 onPress={() => setEditModal(false)}
@@ -258,7 +272,7 @@ export default function Home() {
         </View>
       </Modal>
 
-      {/* Create Modal */}
+      {/* CREATE MODAL */}
       <Modal visible={createModal} transparent animationType="fade">
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
@@ -297,6 +311,7 @@ export default function Home() {
               >
                 <Text style={styles.btnText}>Criar</Text>
               </TouchableOpacity>
+
               <TouchableOpacity
                 style={[styles.btn, { backgroundColor: "#666" }]}
                 onPress={() => setCreateModal(false)}
@@ -325,25 +340,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#1a1a1a",
     marginTop: 0,
   },
-  greeting: {
-    color: "#fff",
-    fontSize: 24,
-    fontWeight: "bold",
-  },
-  subtitle: {
-    color: "#888",
-    fontSize: 14,
-    marginTop: 4,
-  },
   headerTitle: {
     color: "#fff",
     fontSize: 18,
     fontWeight: "700",
-    textAlign: "center",
-  },
-  headerIcons: {
-    flexDirection: "row",
-    gap: 12,
   },
   iconButton: {
     padding: 8,
@@ -355,18 +355,17 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     paddingBottom: 100,
   },
+
+  /* AQUI É O ESPAÇAMENTO NOVO DOS CARDS */
   reportCardGrid: {
     borderRadius: 12,
     padding: 16,
     width: "48%",
     minHeight: 160,
     justifyContent: "space-between",
-    elevation: 4,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
+    marginBottom: 16, // novo espaçamento ✔
   },
+
   reportHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -376,7 +375,6 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 16,
     fontWeight: "700",
-    flex: 1,
   },
   editButton: {
     padding: 6,
@@ -408,6 +406,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginTop: 8,
   },
+
   reportCardList: {
     flexDirection: "row",
     alignItems: "center",
@@ -415,7 +414,6 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 16,
     marginBottom: 12,
-    elevation: 2,
   },
   listColorIndicator: {
     width: 6,
@@ -461,6 +459,7 @@ const styles = StyleSheet.create({
   listEditButton: {
     padding: 8,
   },
+
   emptyContainer: {
     flex: 1,
     justifyContent: "center",
@@ -479,6 +478,7 @@ const styles = StyleSheet.create({
     marginTop: 8,
     textAlign: "center",
   },
+
   modalContainer: {
     flex: 1,
     backgroundColor: "rgba(0,0,0,0.8)",
