@@ -1,3 +1,4 @@
+// app/register.tsx
 // @ts-nocheck
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
@@ -13,9 +14,8 @@ import {
   View,
 } from "react-native";
 
-import { auth, db } from "../services/firebase";
+import { auth } from "../services/firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 
 export default function RegisterScreen() {
   const router = useRouter();
@@ -45,30 +45,20 @@ export default function RegisterScreen() {
     try {
       setLoading(true);
 
-      // 1) Cria o usuário no Firebase Auth
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        email.trim(),
-        password
-      );
+      // cria o usuário no Firebase Auth
+      await createUserWithEmailAndPassword(auth, email.trim(), password);
 
-      const user = userCredential.user;
-
-      // 2) Salva dados extras no Firestore (coleção users)
-      await setDoc(doc(db, "users", user.uid), {
-        email: user.email,
-        createdAt: serverTimestamp(),
-      });
-
-      // 3) Mensagem e volta pra tela de login
+      // alerta + volta pra tela de login
       Alert.alert("Sucesso", "Conta criada com sucesso!", [
         {
           text: "OK",
-          onPress: () => router.push("/"), // volta pro login
+          onPress: () => {
+            router.push("/"); // VOLTA PARA A TELA DE LOGIN
+          },
         },
       ]);
     } catch (error: any) {
-      console.log(error);
+      console.log("❌ ERRO NO CADASTRO:", error);
 
       let message = "Erro ao criar conta. Tente novamente.";
 
@@ -155,20 +145,24 @@ export default function RegisterScreen() {
         </View>
 
         {/* Botão Registrar */}
-        <TouchableOpacity style={styles.button} onPress={handleRegister} disabled={loading}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={handleRegister}
+          disabled={loading}
+        >
           <Text style={styles.buttonText}>
             {loading ? "Registrando..." : "Registrar-se"}
           </Text>
         </TouchableOpacity>
 
         {/* Linha divisória */}
-        <View className="dividerContainer" style={styles.dividerContainer}>
+        <View style={styles.dividerContainer}>
           <View style={styles.line} />
           <Text style={styles.ou}>OU</Text>
           <View style={styles.line} />
         </View>
 
-        {/* Google */}
+        {/* Google (placeholder) */}
         <TouchableOpacity style={styles.googleButton}>
           <Ionicons name="logo-google" size={18} color="#fff" />
           <Text style={styles.googleText}>Continuar com o google</Text>

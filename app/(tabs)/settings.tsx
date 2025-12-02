@@ -1,98 +1,91 @@
-import { Ionicons } from "@expo/vector-icons";
+// app/(tabs)/settings.tsx
 // @ts-nocheck
-import { useRouter } from "expo-router";
 import React from "react";
 import {
-  Image,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 
 export default function SettingsScreen() {
   const router = useRouter();
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      
-      {/* Header com Botão Voltar e Título */}
-      <View style={styles.header}>
+      <View style={styles.card}>
+        {/* Botão voltar (se tiver stack) */}
         <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-          <Ionicons name="chevron-back" size={28} color="#fff" />
+          <Ionicons name="chevron-back" size={24} color="#fff" />
         </TouchableOpacity>
 
-        <Text style={styles.headerTitle}>Configurações</Text>
+        <Text style={styles.title}>Configurações</Text>
 
-        {/* Espaço para manter alinhamento */}
-        <View style={{ width: 28 }} />
-      </View>
+        {/* Imagem / gráfico fake */}
+        <View style={styles.chartFake} />
 
-      {/* Logo */}
-      <View style={styles.chartContainer}>
-        <Image
-          source={require("@/assets/images/MYFINANCES-LOGO.png")}
-          style={styles.pieChart}
-          resizeMode="contain"
-        />
-      </View>
-
-      {/* Menu Principal */}
-      <View style={styles.menuContainer}>
-
-        {/* PERFIL */}
+        {/* Botão PERFIL */}
         <TouchableOpacity
-          style={styles.menuItem}
+          style={styles.option}
           onPress={() => router.push("/profile")}
         >
-          <View style={styles.menuItemLeft}>
-            <Ionicons name="person-circle" size={20} color="#0095ff" />
-            <Text style={styles.menuText}>PERFIL</Text>
+          <View style={styles.optionLeft}>
+            <Ionicons name="person-circle-outline" size={24} color="#fff" />
+            <Text style={styles.optionText}>PERFIL</Text>
           </View>
+          <Ionicons name="chevron-forward" size={20} color="#fff" />
         </TouchableOpacity>
 
-        {/* Minhas Metas */}
+        {/* Botão MINHAS METAS */}
         <TouchableOpacity
-          style={styles.menuItem}
-          onPress={() => router.push("/goals")}
+          style={styles.option}
+          onPress={() => router.push("/(tabs)/goals")}
         >
-          <View style={styles.menuItemLeft}>
-            <Ionicons name="flag" size={20} color="#0095ff" />
-            <Text style={styles.menuText}>MINHAS METAS</Text>
+          <View style={styles.optionLeft}>
+            <Ionicons name="flag-outline" size={24} color="#1e90ff" />
+            <Text style={styles.optionText}>MINHAS METAS</Text>
           </View>
+          <Ionicons name="chevron-forward" size={20} color="#fff" />
         </TouchableOpacity>
 
-        {/* Minhas Conquistas */}
+        {/* Botão MINHAS CONQUISTAS */}
         <TouchableOpacity
-          style={styles.menuItem}
-          onPress={() => router.push("/achievements")}
+          style={styles.option}
+          onPress={() => router.push("/(tabs)/achievements")}
         >
-          <View style={styles.menuItemLeft}>
-            <Ionicons name="trophy" size={20} color="#ffa500" />
-            <Text style={styles.menuText}>MINHAS CONQUISTAS</Text>
+          <View style={styles.optionLeft}>
+            <Ionicons name="trophy-outline" size={24} color="#ffbf00" />
+            <Text style={styles.optionText}>MINHAS CONQUISTAS</Text>
           </View>
+          <Ionicons name="chevron-forward" size={20} color="#fff" />
         </TouchableOpacity>
 
-        {/* Mudar Tema */}
-        <TouchableOpacity style={styles.menuItem}>
-          <View style={styles.menuItemLeft}>
-            <Ionicons name="contrast" size={20} color="#0095ff" />
-            <Text style={styles.menuText}>MUDAR TEMA</Text>
+        {/* Botão MUDAR TEMA (placeholder) */}
+        <TouchableOpacity style={styles.option}>
+          <View style={styles.optionLeft}>
+            <Ionicons name="moon-outline" size={24} color="#1e90ff" />
+            <Text style={styles.optionText}>MUDAR TEMA</Text>
           </View>
+          <Ionicons name="chevron-forward" size={20} color="#fff" />
         </TouchableOpacity>
 
-        {/* Sobre */}
-        <TouchableOpacity style={styles.menuItem}>
-          <View style={styles.menuItemLeft}>
-            <Ionicons name="information-circle" size={20} color="#0095ff" />
-            <Text style={styles.menuText}>SOBRE</Text>
+        {/* Botão SOBRE */}
+        <TouchableOpacity
+          style={styles.option}
+          onPress={() => router.push("/about_us")}
+        >
+          <View style={styles.optionLeft}>
+            <Ionicons name="information-circle-outline" size={24} color="#1e90ff" />
+            <Text style={styles.optionText}>SOBRE</Text>
           </View>
+          <Ionicons name="chevron-forward" size={20} color="#fff" />
         </TouchableOpacity>
 
+        <Text style={styles.version}>Versão • 22.10.25</Text>
       </View>
-
-      <Text style={styles.version}>Versão • 22.10.25</Text>
     </ScrollView>
   );
 }
@@ -100,65 +93,60 @@ export default function SettingsScreen() {
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    backgroundColor: "#2b2b2b",
-    paddingBottom: 40,
-    paddingTop: 40,
+    backgroundColor: "#111",
+    justifyContent: "center",
+    alignItems: "center",
+    paddingVertical: 40,
   },
-  header: {
+  card: {
+    backgroundColor: "#2b2b2b",
+    borderRadius: 24,
+    padding: 24,
+    width: "90%",
+  },
+  backButton: {
+    marginBottom: 8,
+    padding: 4,
+    width: 32,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#fff",
+    textAlign: "center",
+    marginBottom: 24,
+  },
+  chartFake: {
+    width: 180,
+    height: 120,
+    borderRadius: 60,
+    backgroundColor: "#444",
+    alignSelf: "center",
+    marginBottom: 32,
+  },
+  option: {
+    backgroundColor: "#1e1e1e",
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    marginBottom: 12,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: 16,
-    paddingVertical: 20,
   },
-  backButton: {
-    padding: 8,
-  },
-  headerTitle: {
-    color: "#fff",
-    fontSize: 18,
-    fontWeight: "600",
-    textAlign: "center",
-    flex: 1,
-  },
-  chartContainer: {
+  optionLeft: {
+    flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: 40,
-  },
-  pieChart: {
-    width: 180,
-    height: 150,
-  },
-  menuContainer: {
-    paddingHorizontal: 16,
     gap: 10,
-    paddingVertical: 10,
   },
-  menuItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#1e1e1e",
-    paddingVertical: 16,
-    paddingHorizontal: 16,
-    borderRadius: 8,
-  },
-  menuItemLeft: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-    flex: 1,
-  },
-  menuText: {
+  optionText: {
     color: "#fff",
-    fontSize: 13,
-    fontWeight: "600",
-    letterSpacing: 0.3,
+    fontSize: 16,
+    fontWeight: "bold",
   },
   version: {
-    color: "#888",
-    fontSize: 12,
+    marginTop: 24,
     textAlign: "center",
-    paddingVertical: 30,
+    color: "#aaa",
   },
 });
