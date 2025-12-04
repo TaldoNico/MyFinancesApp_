@@ -1,4 +1,4 @@
-// Arquivo: app/(tabs)/newgoals.tsx
+// Arquivo: app/newgoals.tsx  (ou app/(tabs)/newgoals.tsx se estiver aí)
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
@@ -12,6 +12,16 @@ import {
   View
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { auth } from "../services/firebase"; // <-- se estiver dentro de (tabs), use "../../services/firebase"
+
+// mesma função que usamos em goals.tsx
+const getGoalsStorageKey = () => {
+  const user = auth.currentUser;
+  if (!user) {
+    return "goals_guest";
+  }
+  return `goals_${user.uid}`;
+};
 
 export default function NewGoalScreen() {
   const router = useRouter();
@@ -37,12 +47,14 @@ export default function NewGoalScreen() {
     };
 
     try {
-      const saved = await AsyncStorage.getItem("goals");
+      const storageKey = getGoalsStorageKey();
+
+      const saved = await AsyncStorage.getItem(storageKey);
       const goals = saved ? JSON.parse(saved) : [];
 
       goals.push(newGoal);
 
-      await AsyncStorage.setItem("goals", JSON.stringify(goals));
+      await AsyncStorage.setItem(storageKey, JSON.stringify(goals));
 
       router.back();
     } catch (err) {
@@ -52,8 +64,8 @@ export default function NewGoalScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView 
-        style={{ flex: 1 }} 
+      <ScrollView
+        style={{ flex: 1 }}
         contentContainerStyle={{ paddingBottom: 60 }}
         keyboardShouldPersistTaps="handled"
       >
