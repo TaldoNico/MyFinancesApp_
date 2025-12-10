@@ -18,6 +18,7 @@ import { CategoryManager } from '../../components/category-manager';
 import { FinancialReport } from '../../components/financial-report';
 import { Category, DEFAULT_CATEGORIES } from '../../types/category';
 import { ChartData, Transaction } from '../../types/transaction';
+import { useStats } from '@/context/StatsContext'; // ✅ CONQUISTAS
 
 // --- Configurações e Constantes ---
 
@@ -39,8 +40,8 @@ const COLORS = {
 };
 
 const TIPOS: Category[] = [
-    { value: 'entrada', label: 'Entrada', color: COLORS.primary },
-    { value: 'saida', label: 'Saída', color: COLORS.error }
+  { value: 'entrada', label: 'Entrada', color: COLORS.primary },
+  { value: 'saida', label: 'Saída', color: COLORS.error }
 ];
 
 // --- Funções Auxiliares ---
@@ -58,7 +59,7 @@ const getCurrentDate = () => {
 const formatCategoryDisplayName = (categoryValue: string, categoriesList: Category[]): string => {
   const category = categoriesList.find(c => c.value === categoryValue);
   if (category) {
-      return category.label;
+    return category.label;
   }
   return categoryValue
     .split('-')
@@ -67,31 +68,31 @@ const formatCategoryDisplayName = (categoryValue: string, categoriesList: Catego
 };
 
 const getCategoryColor = (categoryValue: string, categoriesList: Category[]): string => {
-    const category = categoriesList.find(c => c.value === categoryValue);
-    return category ? category.color : DEFAULT_CATEGORIES[DEFAULT_CATEGORIES.length - 1].color;
+  const category = categoriesList.find(c => c.value === categoryValue);
+  return category ? category.color : DEFAULT_CATEGORIES[DEFAULT_CATEGORIES.length - 1].color;
 };
 
 const calculateCategoryTotals = (transactions: Transaction[], categoriesList: Category[]): ChartData[] => {
-    const outputTransactions = transactions.filter(t => t.tipo === 'saida');
-    
-    const totals = outputTransactions.reduce<Record<string, number>>((acc, t) => {
-        const cat = t.categoria || 'outros'; 
-        acc[cat] = (acc[cat] || 0) + t.valor;
-        return acc;
-    }, {});
+  const outputTransactions = transactions.filter(t => t.tipo === 'saida');
 
-    return Object.keys(totals).map(categoryValue => {
-        const totalValue = totals[categoryValue];
-        const displayName = formatCategoryDisplayName(categoryValue, categoriesList);
-        
-        return {
-            name: displayName,
-            population: parseFloat(totalValue.toFixed(2)),
-            color: getCategoryColor(categoryValue, categoriesList),
-            legendFontColor: COLORS.text,
-            legendFontSize: 12,
-        };
-    }).sort((a, b) => b.population - a.population);
+  const totals = outputTransactions.reduce<Record<string, number>>((acc, t) => {
+    const cat = t.categoria || 'outros';
+    acc[cat] = (acc[cat] || 0) + t.valor;
+    return acc;
+  }, {});
+
+  return Object.keys(totals).map(categoryValue => {
+    const totalValue = totals[categoryValue];
+    const displayName = formatCategoryDisplayName(categoryValue, categoriesList);
+
+    return {
+      name: displayName,
+      population: parseFloat(totalValue.toFixed(2)),
+      color: getCategoryColor(categoryValue, categoriesList),
+      legendFontColor: COLORS.text,
+      legendFontSize: 12,
+    };
+  }).sort((a, b) => b.population - a.population);
 };
 
 // --- Componentes ---
@@ -106,15 +107,15 @@ interface SelectInputProps {
 
 const SelectInput = ({ placeholder, options, selectedValue, onValueChange, disabled = false }: SelectInputProps) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  
+
   const displayOption = options.find(opt => opt.value === selectedValue);
   const displayValue = displayOption ? displayOption.label : placeholder;
 
   return (
     <>
-      <TouchableOpacity 
-        onPress={() => !disabled && setIsModalVisible(true)} 
-        style={[styles.selectContainer, disabled && styles.inputDisabled]} 
+      <TouchableOpacity
+        onPress={() => !disabled && setIsModalVisible(true)}
+        style={[styles.selectContainer, disabled && styles.inputDisabled]}
         activeOpacity={disabled ? 1 : 0.7}
       >
         <Text style={[styles.selectText, !displayOption && { color: COLORS.placeholder }]}>
@@ -128,9 +129,9 @@ const SelectInput = ({ placeholder, options, selectedValue, onValueChange, disab
         animationType="fade"
         onRequestClose={() => setIsModalVisible(false)}
       >
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.modalOverlay}
-          activeOpacity={1} 
+          activeOpacity={1}
           onPress={() => setIsModalVisible(false)}
         >
           <View style={styles.modalContent} onStartShouldSetResponder={() => true}>
@@ -151,14 +152,14 @@ const SelectInput = ({ placeholder, options, selectedValue, onValueChange, disab
                   }}
                 >
                   {option.color && (
-                    <View 
+                    <View
                       style={[
-                        styles.optionColor, 
+                        styles.optionColor,
                         { backgroundColor: option.color }
-                      ]} 
+                      ]}
                     />
                   )}
-                  <Text 
+                  <Text
                     style={[
                       styles.optionText,
                       option.value === selectedValue && styles.optionTextSelected
@@ -169,7 +170,7 @@ const SelectInput = ({ placeholder, options, selectedValue, onValueChange, disab
                 </TouchableOpacity>
               ))}
             </ScrollView>
-            <TouchableOpacity 
+            <TouchableOpacity
               style={styles.modalCancelButton}
               onPress={() => setIsModalVisible(false)}
             >
@@ -190,16 +191,16 @@ interface TransactionItemProps {
 
 const TransactionItem = ({ transaction, onDelete, categories }: TransactionItemProps) => {
   const typeStyle = transaction.tipo === 'entrada' ? styles.entrada : styles.saida;
-  
+
   let categoryLabel = '';
   if (transaction.tipo === 'saida' && transaction.categoria) {
-      categoryLabel = formatCategoryDisplayName(transaction.categoria, categories);
+    categoryLabel = formatCategoryDisplayName(transaction.categoria, categories);
   }
 
   return (
     <View style={[styles.transactionItem, typeStyle]}>
       <Text style={styles.transactionText}>
-        <Text style={{fontWeight: 'bold'}}>{transaction.descricao}</Text> - {formatCurrency(transaction.valor)} 
+        <Text style={{ fontWeight: 'bold' }}>{transaction.descricao}</Text> - {formatCurrency(transaction.valor)}
         {categoryLabel ? ` (${categoryLabel})` : ''} ({transaction.data})
       </Text>
       <TouchableOpacity onPress={onDelete} style={styles.deleteBtn}>
@@ -221,6 +222,8 @@ export default function FinanceApp() {
   const [categories, setCategories] = useState<Category[]>(DEFAULT_CATEGORIES);
   const [isCategoryManagerVisible, setIsCategoryManagerVisible] = useState(false);
 
+  const { stats, updateStats } = useStats(); // ✅ PEGANDO STATS E FUNÇÃO DE ATUALIZAÇÃO
+
   useEffect(() => {
     const loadData = async () => {
       try {
@@ -234,7 +237,11 @@ export default function FinanceApp() {
         const storedCategories = await AsyncStorage.getItem('@MyFinances:customCategories');
         if (storedCategories) {
           const customCategories = JSON.parse(storedCategories) as Category[];
-          setCategories([...DEFAULT_CATEGORIES.slice(0, -1), ...customCategories, DEFAULT_CATEGORIES[DEFAULT_CATEGORIES.length - 1]]);
+          setCategories([
+            ...DEFAULT_CATEGORIES.slice(0, -1),
+            ...customCategories,
+            DEFAULT_CATEGORIES[DEFAULT_CATEGORIES.length - 1]
+          ]);
         }
       } catch (e) {
         console.error('Failed to load data:', e);
@@ -260,10 +267,10 @@ export default function FinanceApp() {
     setTotal(newTotal);
     setChartData(calculateCategoryTotals(transactions, categories));
   }, [transactions, categories]);
-  
+
   useEffect(() => {
     if (tipo === 'entrada') {
-      setCategoria(''); 
+      setCategoria('');
       setCustomCategoryText('');
     }
   }, [tipo]);
@@ -274,6 +281,7 @@ export default function FinanceApp() {
     }
   }, [categoria]);
 
+  // ✅ AQUI ESTÁ A FUNÇÃO DE ADICIONAR TRANSAÇÃO + CONQUISTAS
   const handleAddTransaction = () => {
     const parsedValor = parseFloat(valor.replace(',', '.'));
     let finalCategoryValue = categoria;
@@ -290,7 +298,7 @@ export default function FinanceApp() {
       Alert.alert('Erro', 'Preencha a descrição e o valor corretamente.');
       return;
     }
-    
+
     if (tipo === 'saida' && !finalCategoryValue) {
       Alert.alert('Erro', 'A Categoria é obrigatória para transações de Saída.');
       return;
@@ -305,20 +313,54 @@ export default function FinanceApp() {
       ...(tipo === 'saida' && finalCategoryValue && { categoria: finalCategoryValue }),
     };
 
+    // Salva transação
     saveTransactions([novaTransacao, ...transactions]);
 
+    // Limpa campos
     setDescricao('');
     setValor('');
     setTipo('entrada');
     setCategoria('');
     setCustomCategoryText('');
+
+    // ================================
+    // ⭐ ATUALIZAÇÃO DAS CONQUISTAS ⭐
+    // ================================
+
+    // 1️⃣ Qualquer transação conta como "registro de despesas"
+    updateStats({
+      totalRegistrosDespesas: stats.totalRegistrosDespesas + 1,
+    });
+
+    // 2️⃣ Entradas → acumulam na poupança
+    if (tipo === 'entrada') {
+      updateStats({
+        totalGuardadoPoupanca: stats.totalGuardadoPoupanca + parsedValor,
+      });
+    }
+
+    // 3️⃣ Saídas específicas (ex: lanches)
+    if (tipo === 'saida') {
+      if (finalCategoryValue === 'lanches') {
+        // Gasto com lanches → zera contador de dias sem lanches
+        updateStats({
+          diasSemLanches: 0,
+        });
+      }
+    }
+
+    // 4️⃣ Atualiza se o saldo está positivo
+    const novoSaldo = total + (tipo === 'entrada' ? parsedValor : -parsedValor);
+    updateStats({
+      saldoPositivoMes: novoSaldo > 0,
+    });
   };
 
   const handleDeleteTransaction = (id: string) => {
     const newTransactions = transactions.filter(t => t.id !== id);
     saveTransactions(newTransactions);
   };
-  
+
   const [isReportVisible, setIsReportVisible] = useState(false);
   const [previousMonthTransactions, setPreviousMonthTransactions] = useState<Transaction[]>([]);
 
@@ -341,8 +383,7 @@ export default function FinanceApp() {
   useEffect(() => {
     const currentDate = new Date();
     const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-    
-    // Filtra transações do mês anterior
+
     const previousTransactions = transactions.filter(t => {
       const transactionDate = new Date(t.data);
       return transactionDate < firstDayOfMonth;
@@ -357,7 +398,7 @@ export default function FinanceApp() {
   const handleGenerateReport = () => {
     setIsReportVisible(true);
   };
-  
+
   const ChartLegend = () => (
     <View style={styles.chartLegend}>
       {chartData.map((data, index) => (
@@ -371,7 +412,7 @@ export default function FinanceApp() {
       {chartData.length === 0 && <Text style={styles.emptyText}>Sem gastos registrados para o gráfico.</Text>}
     </View>
   );
-  
+
   const chartConfig = {
     backgroundColor: COLORS.listBg,
     backgroundGradientFrom: COLORS.listBg,
@@ -387,13 +428,14 @@ export default function FinanceApp() {
 
   const isCategoryDisabled = tipo !== 'saida';
   const showCustomCategoryInput = tipo === 'saida' && categoria === 'outros';
-  
+
   return (
-    <SafeAreaView style={styles.fillScreen}> 
+    <SafeAreaView style={styles.fillScreen}>
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.saldo}>
           <Text style={styles.saldoText}>
-            Saldo Atual: <Text style={[styles.saldoValue, { color: total >= 0 ? COLORS.primary : COLORS.error }]}>
+            Saldo Atual:{' '}
+            <Text style={[styles.saldoValue, { color: total >= 0 ? COLORS.primary : COLORS.error }]}>
               {formatCurrency(total)}
             </Text>
           </Text>
@@ -415,14 +457,14 @@ export default function FinanceApp() {
             onChangeText={setValor}
             keyboardType="numeric"
           />
-          
+
           <SelectInput
             placeholder="Tipo (Entrada/Saída)"
             selectedValue={tipo}
             options={TIPOS}
             onValueChange={(value) => setTipo(value as 'entrada' | 'saida')}
           />
-          
+
           <SelectInput
             placeholder="Categoria (apenas para saídas)"
             disabled={isCategoryDisabled}
@@ -430,14 +472,14 @@ export default function FinanceApp() {
             options={categories}
             onValueChange={setCategoria}
           />
-          
-          <TouchableOpacity 
+
+          <TouchableOpacity
             style={[styles.buttonOutline, { marginBottom: 12 }]}
             onPress={() => setIsCategoryManagerVisible(true)}
           >
             <Text style={styles.buttonOutlineText}>Gerenciar Categorias</Text>
           </TouchableOpacity>
-          
+
           {showCustomCategoryInput && (
             <TextInput
               style={styles.inputFullWidth}
@@ -447,7 +489,7 @@ export default function FinanceApp() {
               onChangeText={setCustomCategoryText}
             />
           )}
-          
+
           <TouchableOpacity onPress={handleAddTransaction} style={styles.buttonFull}>
             <Text style={styles.buttonText}>ADICIONAR</Text>
           </TouchableOpacity>
@@ -456,7 +498,7 @@ export default function FinanceApp() {
         <View style={styles.transactionsList}>
           <Text style={styles.h2}>Últimas Transações</Text>
           {transactions.length > 0 ? (
-            transactions.map((t) => ( 
+            transactions.map((t) => (
               <TransactionItem
                 key={t.id}
                 transaction={t}
@@ -471,7 +513,7 @@ export default function FinanceApp() {
 
         <View style={styles.chartContainer}>
           <Text style={styles.h2}>Gastos por Categoria</Text>
-          
+
           {chartData.length > 0 ? (
             <PieChart
               data={chartData}
@@ -517,9 +559,9 @@ export default function FinanceApp() {
 }
 
 const styles = StyleSheet.create({
-  fillScreen: { 
-    flex: 1, 
-    backgroundColor: COLORS.background, 
+  fillScreen: {
+    flex: 1,
+    backgroundColor: COLORS.background,
   },
   modalOverlay: {
     flex: 1,
@@ -595,143 +637,143 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 'bold',
   },
-  container: { 
-    padding: 25, 
-    backgroundColor: COLORS.containerBg, 
-    marginHorizontal: isWideScreen ? 'auto' : 0, 
-    width: isWideScreen ? MAX_WIDTH : '100%', 
-    flexGrow: 1, 
+  container: {
+    padding: 25,
+    backgroundColor: COLORS.containerBg,
+    marginHorizontal: isWideScreen ? 'auto' : 0,
+    width: isWideScreen ? MAX_WIDTH : '100%',
+    flexGrow: 1,
   },
-  h2: { 
-    color: COLORS.text, 
-    fontSize: 20, 
-    fontWeight: 'bold', 
-    textAlign: 'center', 
-    marginBottom: 15, 
+  h2: {
+    color: COLORS.text,
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 15,
   },
-  saldo: { 
-    textAlign: 'center', 
-    marginBottom: 20, 
-    padding: 15, 
-    backgroundColor: COLORS.listBg, 
-    borderRadius: 8, 
-    alignItems: 'center', 
+  saldo: {
+    textAlign: 'center',
+    marginBottom: 20,
+    padding: 15,
+    backgroundColor: COLORS.listBg,
+    borderRadius: 8,
+    alignItems: 'center',
   },
-  saldoText: { 
-    fontSize: 26, 
-    fontWeight: 'bold', 
-    color: COLORS.text, 
+  saldoText: {
+    fontSize: 26,
+    fontWeight: 'bold',
+    color: COLORS.text,
   },
   saldoValue: {},
-  form: { 
-    flexDirection: 'row', 
-    flexWrap: 'wrap', 
-    justifyContent: 'space-between', 
-    marginBottom: 25, 
+  form: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    marginBottom: 25,
   },
-  input: { 
-    width: isWideScreen ? '23%' : (width > 450 ? '48%' : '100%'), 
-    padding: 12, 
-    borderWidth: 1, 
-    borderColor: COLORS.border, 
-    borderRadius: 8, 
-    fontSize: 14, 
-    backgroundColor: COLORS.listBg, 
-    color: COLORS.text, 
-    marginBottom: 12, 
+  input: {
+    width: isWideScreen ? '23%' : (width > 450 ? '48%' : '100%'),
+    padding: 12,
+    borderWidth: 1,
+    borderColor: COLORS.border,
+    borderRadius: 8,
+    fontSize: 14,
+    backgroundColor: COLORS.listBg,
+    color: COLORS.text,
+    marginBottom: 12,
   },
-  inputFullWidth: { 
-    width: '100%', 
-    padding: 12, 
-    borderWidth: 1, 
-    borderColor: COLORS.primary, 
-    borderRadius: 8, 
-    fontSize: 14, 
-    backgroundColor: COLORS.listBg, 
-    color: COLORS.text, 
-    marginBottom: 12, 
+  inputFullWidth: {
+    width: '100%',
+    padding: 12,
+    borderWidth: 1,
+    borderColor: COLORS.primary,
+    borderRadius: 8,
+    fontSize: 14,
+    backgroundColor: COLORS.listBg,
+    color: COLORS.text,
+    marginBottom: 12,
   },
-  selectContainer: { 
-    width: isWideScreen ? '23%' : (width > 450 ? '48%' : '100%'), 
-    padding: 12, 
-    borderWidth: 1, 
-    borderColor: COLORS.border, 
-    borderRadius: 8, 
-    backgroundColor: COLORS.listBg, 
-    justifyContent: 'center', 
-    marginBottom: 12, 
+  selectContainer: {
+    width: isWideScreen ? '23%' : (width > 450 ? '48%' : '100%'),
+    padding: 12,
+    borderWidth: 1,
+    borderColor: COLORS.border,
+    borderRadius: 8,
+    backgroundColor: COLORS.listBg,
+    justifyContent: 'center',
+    marginBottom: 12,
   },
-  selectText: { 
-    fontSize: 14, 
-    color: COLORS.text, 
+  selectText: {
+    fontSize: 14,
+    color: COLORS.text,
   },
-  inputDisabled: { 
-    opacity: 0.5, 
-    backgroundColor: '#444', 
+  inputDisabled: {
+    opacity: 0.5,
+    backgroundColor: '#444',
   },
-  buttonFull: { 
-    backgroundColor: COLORS.primary, 
-    padding: 12, 
-    borderRadius: 8, 
-    alignItems: 'center', 
-    justifyContent: 'center', 
-    width: '100%', 
-    marginTop: 0, 
+  buttonFull: {
+    backgroundColor: COLORS.primary,
+    padding: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    marginTop: 0,
   },
-  buttonText: { 
-    color: 'white', 
-    fontSize: 16, 
-    fontWeight: 'bold', 
-    textTransform: 'uppercase', 
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+    textTransform: 'uppercase',
   },
-  reportButton: { 
-    backgroundColor: COLORS.primary, 
-    padding: 12, 
-    borderRadius: 8, 
-    alignItems: 'center', 
-    justifyContent: 'center', 
-    marginTop: 20, 
+  reportButton: {
+    backgroundColor: COLORS.primary,
+    padding: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 20,
   },
-  transactionsList: { 
-    marginBottom: 20, 
+  transactionsList: {
+    marginBottom: 20,
   },
-  transactionItem: { 
-    flexDirection: 'row', 
-    justifyContent: 'space-between', 
-    alignItems: 'center', 
-    backgroundColor: COLORS.listBg, 
-    padding: 12, 
-    marginBottom: 10, 
-    borderRadius: 8, 
-    borderLeftWidth: 6, 
+  transactionItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: COLORS.listBg,
+    padding: 12,
+    marginBottom: 10,
+    borderRadius: 8,
+    borderLeftWidth: 6,
   },
-  transactionText: { 
-    color: COLORS.text, 
-    flexShrink: 1, 
-    marginRight: 10, 
+  transactionText: {
+    color: COLORS.text,
+    flexShrink: 1,
+    marginRight: 10,
   },
-  entrada: { 
-    borderLeftColor: COLORS.primary, 
+  entrada: {
+    borderLeftColor: COLORS.primary,
   },
-  saida: { 
-    borderLeftColor: COLORS.error, 
+  saida: {
+    borderLeftColor: COLORS.error,
   },
-  deleteBtn: { 
-    backgroundColor: COLORS.error, 
-    paddingHorizontal: 12, 
-    paddingVertical: 6, 
-    borderRadius: 4, 
-    marginLeft: 'auto', 
+  deleteBtn: {
+    backgroundColor: COLORS.error,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 4,
+    marginLeft: 'auto',
   },
-  deleteBtnText: { 
-    color: 'white', 
-    fontSize: 12, 
-    fontWeight: 'bold', 
+  deleteBtnText: {
+    color: 'white',
+    fontSize: 12,
+    fontWeight: 'bold',
   },
-  emptyText: { 
-    color: COLORS.placeholder, 
-    textAlign: 'center', 
-    marginTop: 10, 
+  emptyText: {
+    color: COLORS.placeholder,
+    textAlign: 'center',
+    marginTop: 10,
   },
   chartContainer: {
     marginTop: 20,
@@ -777,5 +819,5 @@ const styles = StyleSheet.create({
   legendText: {
     color: COLORS.text,
     fontSize: 12,
-  }
+  },
 });
