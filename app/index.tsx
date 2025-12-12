@@ -13,8 +13,8 @@ import {
   View,
 } from "react-native";
 
-import { auth } from "../services/firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../services/firebase";
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -32,10 +32,8 @@ export default function LoginScreen() {
     try {
       setLoading(true);
 
-      // Login REAL no Firebase
       await signInWithEmailAndPassword(auth, email.trim(), password);
 
-      // LOGIN OK → Redirecionar sem permitir voltar para tela de login
       router.replace("/(tabs)/home");
 
     } catch (error: any) {
@@ -61,6 +59,7 @@ export default function LoginScreen() {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.card}>
+
         <Image
           source={{
             uri: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
@@ -103,7 +102,7 @@ export default function LoginScreen() {
           </TouchableOpacity>
         </View>
 
-        {/* Esqueci minha senha */}
+        {/* Esqueci senha */}
         <TouchableOpacity onPress={() => router.push("/forgot_password")}>
           <Text style={styles.forgot}>Esqueci minha Senha</Text>
         </TouchableOpacity>
@@ -133,12 +132,12 @@ export default function LoginScreen() {
         </TouchableOpacity>
 
         {/* Registro */}
-        <Text style={styles.registerText}>
-          Não possui uma conta?
+        <View style={styles.registerContainer}>
+          <Text style={styles.registerText}>Não possui uma conta?</Text>
           <TouchableOpacity onPress={() => router.push("/register")}>
             <Text style={styles.registerLink}> Registre-se aqui</Text>
           </TouchableOpacity>
-        </Text>
+        </View>
 
         {/* Termos */}
         <Text style={styles.terms}>
@@ -146,6 +145,7 @@ export default function LoginScreen() {
           <Text style={styles.link}>Política de privacidade</Text> e os{" "}
           <Text style={styles.link}>Termos de uso</Text> do My Finance.
         </Text>
+
       </View>
     </ScrollView>
   );
@@ -244,14 +244,24 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginLeft: 8,
   },
+  
+  registerContainer: {
+    flexDirection: "row",
+    marginTop: 20,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
   registerText: {
     color: "#ccc",
-    marginTop: 15,
+    fontSize: 14,
   },
   registerLink: {
     color: "#0095ff",
     fontWeight: "bold",
+    fontSize: 14,
   },
+
   terms: {
     fontSize: 11,
     color: "#888",

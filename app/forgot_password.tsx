@@ -4,14 +4,14 @@ import { useRouter } from "expo-router";
 // @ts-nocheck
 import React, { useState } from "react";
 import {
-    Alert,
-    Image,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Alert,
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 
 export default function ForgotPasswordScreen() {
@@ -113,13 +113,14 @@ export default function ForgotPasswordScreen() {
           <Text style={styles.backButtonText}>← Voltar para Login</Text>
         </TouchableOpacity>
 
-        {/* Link para Registrar */}
-        <Text style={styles.registerText}>
-          Não possui uma conta?
+        {/* Link para Registrar (lado a lado) */}
+        <View style={styles.registerContainer}>
+          <Text style={styles.registerText}>Não possui uma conta?</Text>
           <TouchableOpacity onPress={() => router.push("/register")}>
             <Text style={styles.registerLink}> Registre-se aqui</Text>
           </TouchableOpacity>
-        </Text>
+        </View>
+
       </View>
     </ScrollView>
   );
@@ -197,12 +198,20 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 14,
   },
+
+  /* Novo bloco */
+  registerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 15,
+  },
   registerText: {
     color: "#ccc",
-    marginTop: 15,
   },
   registerLink: {
     color: "#0095ff",
     fontWeight: "bold",
   },
 });
+

@@ -75,7 +75,7 @@ export default function SettingsScreen() {
           onPress={() => router.push("/(tabs)/goals")}
         >
           <View style={styles.optionLeft}>
-            <Ionicons name="flag-outline" size={24} color="#1e90ff" />
+            <Ionicons name="flag" size={24} color="#1e90ff" />
             <Text style={styles.optionText}>MINHAS METAS</Text>
           </View>
           <Ionicons name="chevron-forward" size={20} color="#fff" />
@@ -87,7 +87,7 @@ export default function SettingsScreen() {
           onPress={() => router.push("/(tabs)/achievements")}
         >
           <View style={styles.optionLeft}>
-            <Ionicons name="trophy-outline" size={24} color="#ffbf00" />
+            <Ionicons name="trophy" size={24} color="#ffbf00" />
             <Text style={styles.optionText}>MINHAS CONQUISTAS</Text>
           </View>
           <Ionicons name="chevron-forward" size={20} color="#fff" />
@@ -96,7 +96,7 @@ export default function SettingsScreen() {
         {/* Botão MUDAR TEMA (placeholder) */}
         <TouchableOpacity style={styles.option}>
           <View style={styles.optionLeft}>
-            <Ionicons name="moon-outline" size={24} color="#1e90ff" />
+            <Ionicons name="moon" size={24} color="#a7a8a5ff" />
             <Text style={styles.optionText}>MUDAR TEMA</Text>
           </View>
           <Ionicons name="chevron-forward" size={20} color="#fff" />
@@ -109,9 +109,9 @@ export default function SettingsScreen() {
         >
           <View style={styles.optionLeft}>
             <Ionicons
-              name="information-circle-outline"
+              name="information-circle"
               size={24}
-              color="#1e90ff"
+              color="#ffffffff"
             />
             <Text style={styles.optionText}>SOBRE</Text>
           </View>
