@@ -1,5 +1,7 @@
 // app/(tabs)/settings.tsx
 // @ts-nocheck
+import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 import React from "react";
 import {
   Alert,
@@ -9,11 +11,9 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
 
-import { auth } from "../../services/firebase";
 import { signOut } from "firebase/auth";
+import { auth } from "../../services/firebase";
 
 export default function SettingsScreen() {
   const router = useRouter();
@@ -89,15 +89,6 @@ export default function SettingsScreen() {
           <View style={styles.optionLeft}>
             <Ionicons name="trophy" size={24} color="#ffbf00" />
             <Text style={styles.optionText}>MINHAS CONQUISTAS</Text>
-          </View>
-          <Ionicons name="chevron-forward" size={20} color="#fff" />
-        </TouchableOpacity>
-
-        {/* Botão MUDAR TEMA (placeholder) */}
-        <TouchableOpacity style={styles.option}>
-          <View style={styles.optionLeft}>
-            <Ionicons name="moon" size={24} color="#a7a8a5ff" />
-            <Text style={styles.optionText}>MUDAR TEMA</Text>
           </View>
           <Ionicons name="chevron-forward" size={20} color="#fff" />
         </TouchableOpacity>
