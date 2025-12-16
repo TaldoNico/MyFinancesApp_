@@ -10,6 +10,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Image,
 } from "react-native";
 
 import { signOut } from "firebase/auth";
@@ -54,8 +55,14 @@ export default function SettingsScreen() {
 
         <Text style={styles.title}>Configurações</Text>
 
-        {/* Imagem / gráfico fake */}
-        <View style={styles.chartFake} />
+        {/* Logo do app no topo */}
+        <View style={styles.logoWrap}>
+          <Image
+            source={require("../../assets/images/MYFINANCES-LOGO.png")}
+            style={styles.logoImage}
+            resizeMode="contain"
+          />
+        </View>
 
         {/* Botão PERFIL */}
         <TouchableOpacity
@@ -154,13 +161,17 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginBottom: 24,
   },
-  chartFake: {
-    width: 180,
+  logoWrap: {
+    alignSelf: 'center',
+    marginBottom: 28,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'transparent',
+    padding: 0,
+  },
+  logoImage: {
+    width: 120,
     height: 120,
-    borderRadius: 60,
-    backgroundColor: "#444",
-    alignSelf: "center",
-    marginBottom: 32,
   },
   option: {
     backgroundColor: "#1e1e1e",
