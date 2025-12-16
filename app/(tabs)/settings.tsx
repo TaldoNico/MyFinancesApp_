@@ -116,7 +116,7 @@ export default function SettingsScreen() {
         >
           <View style={styles.optionLeft}>
             <Ionicons name="log-out-outline" size={24} color="#ff4d4d" />
-            <Text style={[styles.optionText, { color: "#ff4d4d" }]}>
+            <Text style={[styles.optionText, { color: "#f52c2cff" }]}>
               ENCERRAR SESSÃO
             </Text>
           </View>
