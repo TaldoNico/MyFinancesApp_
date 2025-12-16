@@ -396,7 +396,7 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   progressFill: { height: "100%", borderRadius: 3 },
-  progressText: { color: "#fff", fontSize: 12, fontWeight: "600" },
+  progressText: { color: "#f7f0f0ff", fontSize: 12, fontWeight: "600" },
 
   dateText: { color: "rgba(255,255,255,0.7)", fontSize: 12 },
 
